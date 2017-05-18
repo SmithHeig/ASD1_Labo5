@@ -49,9 +49,25 @@ public:
      *  @param size le nombre d'éléments à initialiser par défaut
      */
     ResizableArray(size_t size = 0)
-    /* ... */
     {
-        /* ... */
+        if(size == 0){
+            _begin = nullptr;
+            _end = _begin;
+        } else {
+            _begin = reinterpret_cast<pointer>(::operator new(size * sizeof(value_type)));
+            _end = _begin + size;
+        }
+        try {
+            for(_end = _begin; _end < _end_cap; ++_end){
+                new(_end) value_type();
+            }
+        } catch (...) {
+            for (pointer p = _begin; p < _end; ++p) {
+                p->~value_type();
+            }
+            ::operator delete(_begin);
+            throw;
+        }
     }
     
     /**
@@ -60,7 +76,7 @@ public:
     ResizableArray(const ResizableArray& other)
     /* ... */
     {
-        /* ... */
+        
     }
     
     /**
