@@ -121,7 +121,7 @@ public:
      *  @return le nombre d'éléments stockés
      */
     size_t size() const noexcept {
-        /* ... */
+        return (size_t)(_end - _begin);
     }
     
     /**
@@ -130,7 +130,7 @@ public:
      *  @return le nombre d'éléments stockables avec la mémoire actuellement allouée
      */
     size_t capacity() const noexcept {
-        /* ... */
+        return (size_t)(_end_cap - _begin);
     }
     /**
      *  @brief Redimensionne le tableau
@@ -140,7 +140,7 @@ public:
      *  @remark si la taille augmente, les éléments supplémentaires doivent être créés. si elle diminue, les éléments excédentaires doivent être détruits
      */
     void resize(size_t newSize) {
-        /* ... */
+
     }
     
     /**
