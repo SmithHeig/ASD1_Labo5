@@ -24,24 +24,24 @@ ostream& operator << (ostream& os, const ResizableArray<T>& );
 template < typename T > class ResizableArray {
 public:
     friend ostream& operator << <T>(ostream& os, const ResizableArray<T>& );
-    
+
     using value_type = T;
     using reference = T&;
     using const_reference = const T&;
     using rvalue_reference = T&&;
     using pointer = T*;
     using const_pointer = const T*;
-    
+
 private:
-    
+
     // Seuls attributs privés autorisé.
     // La mémoire allouée va de _begin (compris) à _end_cap (non compris).
     // La mémoire utilisée va de _begin (compris) à _end (non compris).
-    
+
     pointer _begin;
     pointer _end;
     pointer _end_cap;
-    
+
 public:
     /**
      *  @brief Constructeur.
@@ -69,7 +69,7 @@ public:
             throw;
         }
     }
-    
+
     /**
      *  @brief Constructeur de copie
      */
@@ -78,7 +78,7 @@ public:
     {
 
     }
-    
+
     /**
      *  @brief Constructeur de déplacement
      */
@@ -87,7 +87,7 @@ public:
     {
         /* ... */
     }
-    
+
     /**
      *  @brief opérateur d'affectation. Réutilise la mémoire courante si la capacité
      *         est suffisante. Réalloue a la capacité minimal nécessaire sinon.
@@ -100,7 +100,7 @@ public:
 
         return *this;
     }
-    
+
     /**
      *  @brief opérateur de déplacement
      *
@@ -113,7 +113,7 @@ public:
         /* ... */
         return *this;
     }
-    
+
     /**
      *  @brief Destructeur
      */
@@ -123,7 +123,7 @@ public:
         }
         ::operator delete(_begin);
     }
-    
+
     /**
      *  @brief Echange le contenu de l'objet avec celui de other
      *
@@ -134,7 +134,7 @@ public:
         std::swap(_end,other._end);
         std::swap(_end_cap, other._end_cap);
     }
-    
+
 public:
     /**
      *  @brief Taille du tableau
@@ -144,7 +144,7 @@ public:
     size_t size() const noexcept {
         return (size_t)(_end - _begin);
     }
-    
+
     /**
      *  @brief Capacité
      *
@@ -173,7 +173,7 @@ public:
             }
         }
     }
-    
+
     /**
      *  @brief Augmente la capacité du tableau
      *
@@ -198,14 +198,17 @@ public:
             _end_cap = temp + newCapacity;
         }
     }
-    
+
     /**
      *  @brief Diminue la capacité autant que possible.
      */
     void shrinkToFit() {
-        /* ... */
+        for(pointer i = _end_cap; i >= _end; --i){
+            i->~value_type();
+        }
+        _end_cap = _end;
     }
-    
+
     /**
      *  @brief ajoute un élément en queue
      *
@@ -217,7 +220,7 @@ public:
         }
         *(_end++) = value;
     }
-    
+
     /**
      *  @brief supprime l'élément en queue
      *
@@ -229,7 +232,7 @@ public:
         }
         (--_end)->~value_type();
     }
-    
+
     /**
      *  @brief accède à l'élément en queue
      *
@@ -243,7 +246,7 @@ public:
         }
         return (*(_end-1));
     }
-    
+
     /**
      *  @brief accède à l'élément en queue
      *
@@ -254,7 +257,7 @@ public:
     const_reference back() const {
         return const_reference(const_cast<ResizableArray*> (this))->back;
     }
-    
+
     /**
      *  @brief Insère un élément en position quelconque
      *
@@ -277,7 +280,7 @@ public:
         *i = value;
         _end++;
     }
-    
+
     /**
      *  @brief supprime un élément en position quelconque
      *
@@ -286,9 +289,15 @@ public:
      *  @exception out_of_range si pos non valide
      */
     void erase(size_t pos) {
-        /* ... */
+        if(pos >= size()){
+            throw out_of_range("pos non valide");
+        }
+        for(pointer i = _begin + pos; i < _end; ++i){
+            *(i) = *(i + 1);
+        }
+        --_end;
     }
-    
+
     /**
      *  @brief accède à un élément en position quelconque
      *
@@ -304,7 +313,7 @@ public:
         }
         return *(_begin + pos);
     }
-    
+
     /**
      *  @brief accède à un élément en position quelconque
      *
