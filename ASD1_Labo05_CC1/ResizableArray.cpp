@@ -52,13 +52,13 @@ public:
     {
         if(size == 0){
             _begin = nullptr;
-            _end = _begin;
+            _end_cap = _begin;
         } else {
             _begin = reinterpret_cast<pointer>(::operator new(size * sizeof(value_type)));
-            _end = _begin + size;
+            _end_cap = _begin + size;
         }
         try {
-            for(_end = _begin; _end < _end_cap; ++_end){
+            for(_end = _begin; _end != _end_cap; ++_end){
                 new(_end) value_type();
             }
         } catch (...) {
@@ -76,7 +76,7 @@ public:
     ResizableArray(const ResizableArray& other)
     /* ... */
     {
-        
+
     }
     
     /**
@@ -97,7 +97,7 @@ public:
      *  @return *this
      */
     ResizableArray& operator = (const ResizableArray& other) {
-        /* ... */
+
         return *this;
     }
     
@@ -118,7 +118,10 @@ public:
      *  @brief Destructeur
      */
     ~ResizableArray() {
-        /* ... */
+        pointer i = _begin;
+        while(i < _end_cap){
+            pointer temp = i + 1;
+        }
     }
     
     /**
@@ -127,7 +130,9 @@ public:
      *  @param other le ResizableArray avec lequel échanger.
      */
     void swap(ResizableArray& other) noexcept {
-        /* ... */
+        std::swap(_begin, other._begin);
+        std::swap(_end,other._end);
+        std::swap(_end_cap, other._end_cap);
     }
     
 public:
@@ -165,7 +170,7 @@ public:
      *  @param newCapacity la nouvelle capacité, si celle ci est plus grande que la capacité actuelle. sinon c'est une no-op.
      */
     void reserve(size_t newCapacity) {
-        /* ... */
+
     }
     
     /**
@@ -201,7 +206,10 @@ public:
      *  @exception runtime_error si le tableau est vide
      */
     reference back() {
-        /* ... */
+        if(size() == 0){
+            throw(runtime_error("empty tabular"));
+        }
+        return (*(_end-1));
     }
     
     /**
@@ -212,7 +220,7 @@ public:
      *  @exception runtime_error si le tableau est vide
      */
     const_reference back() const {
-        /* ... */
+        return const_reference(const_cast<ResizableArray*> (this))->back;
     }
     
     /**
@@ -248,7 +256,10 @@ public:
      *  @exception out_of_range si pos non valide
      */
     reference at(size_t pos) {
-        /* ... */
+        if(pos >= size()){
+            throw(out_of_range("position not valide"));
+        }
+        return *(_begin + pos);
     }
     
     /**
@@ -261,7 +272,7 @@ public:
      *  @exception out_of_range si pos non valide
      */
     const_reference at(size_t pos) const {
-        /* ... */
+        return const_reference(const_cast<ResizableArray*> (this))->at(pos);
     }
 };
 

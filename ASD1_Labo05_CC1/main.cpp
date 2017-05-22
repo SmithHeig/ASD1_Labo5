@@ -15,7 +15,7 @@ int main() {
         cout << "Constructeur par défaut";
         ResizableArray<int> v;
         cout << "\n" << v;
-        cout << "\nreserve(5)";
+        /*cout << "\nreserve(5)";
         v.reserve(5);
         cout << "\n" << v;
         cout << "\n7 fois push_back(rand() % 10)";
@@ -122,7 +122,7 @@ int main() {
             cout << "\nAutre exception ";
         }
         
-        cout << "\n";
+        cout << "\n";*/
     }
-    
+
 }
