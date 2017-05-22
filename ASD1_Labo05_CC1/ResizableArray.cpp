@@ -118,10 +118,10 @@ public:
      *  @brief Destructeur
      */
     ~ResizableArray() {
-        pointer i = _begin;
-        while(i < _end_cap){
-            pointer temp = i + 1;
+        for(pointer ptr = _begin; ptr < _end_cap; ++ptr){
+            ptr->~value_type();
         }
+        ::operator delete(_begin);
     }
     
     /**
@@ -161,7 +161,17 @@ public:
      *  @remark si la taille augmente, les éléments supplémentaires doivent être créés. si elle diminue, les éléments excédentaires doivent être détruits
      */
     void resize(size_t newSize) {
+        if(newSize > size()){
+            if(newSize > capacity()){
+                reserve(newSize);
 
+            }
+            _end += (newSize - size());
+        } else if(newSize < size()){
+            for(size_t i = size()-1; i >= newSize; --i){
+                pop_back();
+            }
+        }
     }
     
     /**
@@ -170,7 +180,23 @@ public:
      *  @param newCapacity la nouvelle capacité, si celle ci est plus grande que la capacité actuelle. sinon c'est une no-op.
      */
     void reserve(size_t newCapacity) {
+        if(newCapacity > capacity()){
+            pointer temp = reinterpret_cast<pointer>(::operator new (newCapacity * sizeof(value_type)));
+            size_t tempSize = size();
+            for(size_t i = 0; i < newCapacity; ++i){
+                if(i < tempSize){
+                    new(temp + i) value_type(_begin[i]);
+                } else {
+                    new(temp + i) value_type();
+                }
 
+            }
+
+            this->~ResizableArray();
+            _begin = temp;
+            _end = temp + tempSize;
+            _end_cap = temp + newCapacity;
+        }
     }
     
     /**
@@ -186,7 +212,10 @@ public:
      *  @param value l'élément à ajouté.
      */
     void push_back(const_reference value) {
-        /* ... */
+        if(size() == capacity()){
+            reserve(size() * 2);
+        }
+        *(_end++) = value;
     }
     
     /**
@@ -195,7 +224,10 @@ public:
      *  @exception runtime_error si le tableau est vide
      */
     void pop_back() {
-        /* ... */
+        if(size() == 0){
+            throw runtime_error("empty tabular");
+        }
+        (--_end)->~value_type();
     }
     
     /**
@@ -232,7 +264,18 @@ public:
      *  @exception out_of_range si pos non valide
      */
     void insert(size_t pos, const_reference value) {
-        /* ... */
+        if(pos > size()){
+            throw out_of_range("pos not valide");
+        }
+        if(size() == capacity()){
+            reserve(size()*2);
+        }
+        pointer i = _end;
+        for(; i != (_begin + pos); --i){
+            *i = *(i - 1);
+        }
+        *i = value;
+        _end++;
     }
     
     /**
