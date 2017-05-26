@@ -215,7 +215,7 @@ public:
             cout << "\n" << v;
             
             {
-                cout << "\n\nConstructeur de copie w(v) ";
+                cout << "\n\nConstructeur de copie w(v)";
                 ResizableArray<T> w(v);
                 cout << "\nv: " << v;
                 cout << "\nw: " << w;
