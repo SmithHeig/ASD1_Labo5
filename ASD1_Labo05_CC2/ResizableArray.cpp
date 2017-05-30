@@ -240,8 +240,10 @@ public:
      *  @brief Diminue la capacité autant que possible.
      */
     void shrinkToFit() {
-        ResizableArray temp = ResizableArray(*this);
-        swap(temp);
+        if(_end_cap > _end){
+            ResizableArray temp = ResizableArray(*this);
+            swap(temp);
+        }
     }
 
     /**
