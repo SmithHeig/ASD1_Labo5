@@ -141,13 +141,19 @@ public:
             swap(temp);
         } else {
             _end = _begin + other.size();
-            for(size_t i = 0; i < other.size(); ++i){
-                if(i < temp_size){
-                    this->at(i) = other.at(i);
-                } else {
-                    new (_begin + i) value_type(other.at(i));
+            for(size_t i = 0; i < temp_size; ++i){
+                this->at(i) = other.at(i);
+            }
+            for(size_t j = temp_size; j < other.size(); ++j){
+                try{
+                    new (_begin + j) value_type(other.at(j));
+                } catch (...){
+                    for(size_t i = 0; i < j; i++){
+                        (_begin + i)->~value_type();
+                    }
                 }
             }
+
         }
         return *this;
     }
@@ -365,6 +371,8 @@ public:
      *
      *  @remark O(n)
      *          garantie de base
+     *          Il est possible d'optimiser en n'utilisant pas le reserve et en faisant un custum qui rajoute l'élément
+     *          directement lors de la copie dans un nouvelle objet.
      */
     void insert(size_t pos, const_reference value) {
         if(pos > size()){
@@ -383,7 +391,6 @@ public:
             }
             *(_begin + pos) = value;
         }
-
     }
 
     /**
