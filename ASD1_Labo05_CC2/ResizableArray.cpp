@@ -47,6 +47,10 @@ public:
      *  @brief Constructeur.
      *
      *  @param size le nombre d'éléments à initialiser par défaut
+     *
+     *  O(n)
+     *  garantie forte
+     *
      */
     ResizableArray(size_t size = 0)
     {
@@ -72,6 +76,10 @@ public:
 
     /**
      *  @brief Constructeur de copie
+     *
+     *  O(n)
+     *  garantie forte
+     *
      */
     ResizableArray(const ResizableArray& other)
     /* ... */
@@ -100,6 +108,10 @@ public:
 
     /**
      *  @brief Constructeur de déplacement
+     *
+     *  O(1)
+     *  garantie Noexcept
+     *
      */
     ResizableArray(ResizableArray&& other)
     /* ... */
@@ -117,6 +129,10 @@ public:
      *  @param other le ResizableArray à copier
      *
      *  @return *this
+     *
+     *  O(n)
+     *  garantie forte
+     *
      */
     ResizableArray& operator = (const ResizableArray& other) {
         size_t temp_size = size();
@@ -143,6 +159,9 @@ public:
      de sorte à être vide après déplacement
      *
      *  @return *this
+     *
+     *  O(n)
+     *  garantie Noexcept
      */
     ResizableArray& operator = (ResizableArray&& other) {
         swap(other);
@@ -151,6 +170,9 @@ public:
 
     /**
      *  @brief Destructeur
+     *
+     *  O(n)
+     *  garantie forte
      */
     ~ResizableArray() {
         for(pointer ptr = _begin; ptr < _end; ++ptr){
@@ -163,6 +185,10 @@ public:
      *  @brief Echange le contenu de l'objet avec celui de other
      *
      *  @param other le ResizableArray avec lequel échanger.
+     *
+     *  O(1)
+     *  garantie Noexcept
+     *
      */
     void swap(ResizableArray& other) noexcept {
         std::swap(_begin, other._begin);
@@ -175,6 +201,10 @@ public:
      *  @brief Taille du tableau
      *
      *  @return le nombre d'éléments stockés
+     *
+     *  O(1)
+     *  garantie Noexcept
+     *
      */
     size_t size() const noexcept {
         return (size_t)(_end - _begin);
@@ -184,6 +214,10 @@ public:
      *  @brief Capacité
      *
      *  @return le nombre d'éléments stockables avec la mémoire actuellement allouée
+     *
+     *  O(1)
+     *  garantie Noexcept
+     *
      */
     size_t capacity() const noexcept {
         return (size_t)(_end_cap - _begin);
@@ -194,6 +228,10 @@ public:
      *  @param newSize le nouveau nombre d'éléments du tableau
      *
      *  @remark si la taille augmente, les éléments supplémentaires doivent être créés. si elle diminue, les éléments excédentaires doivent être détruits
+     *
+     *  O(n)
+     *  garantie forte
+     *
      */
     void resize(size_t newSize) {
         if(newSize > size()){
@@ -212,6 +250,10 @@ public:
      *  @brief Augmente la capacité du tableau
      *
      *  @param newCapacity la nouvelle capacité, si celle ci est plus grande que la capacité actuelle. sinon c'est une no-op.
+     *
+     *  O(n)
+     *  garantie forte
+     *
      */
     void reserve(size_t newCapacity) {
         if(newCapacity > capacity()){
@@ -238,6 +280,9 @@ public:
 
     /**
      *  @brief Diminue la capacité autant que possible.
+     *
+     *  O(1)
+     *  garantie Noexcept
      */
     void shrinkToFit() {
         if(_end_cap > _end){
@@ -250,6 +295,9 @@ public:
      *  @brief ajoute un élément en queue
      *
      *  @param value l'élément à ajouté.
+     *
+     *  O(1)
+     *  garantie de base
      */
     void push_back(const_reference value) {
         if(size() == capacity()){
@@ -262,6 +310,9 @@ public:
      *  @brief supprime l'élément en queue
      *
      *  @exception runtime_error si le tableau est vide
+     *
+     *  O(1)
+     *  garantie de base
      */
     void pop_back() {
         if(size() == 0){
@@ -276,6 +327,9 @@ public:
      *  @return une référence (modifiable) à cet élément
      *
      *  @exception runtime_error si le tableau est vide
+     *
+     *  O(1)
+     *  garantie de base
      */
     reference back() {
         if(size() == 0){
@@ -290,6 +344,9 @@ public:
      *  @return une référence (constante) à cet élément
      *
      *  @exception runtime_error si le tableau est vide
+     *
+     *  O(1)
+     *  garantie de base
      */
     const_reference back() const {
         return const_reference(const_cast<ResizableArray*> (this))->back;
@@ -302,6 +359,9 @@ public:
      *  @param value l'élément à insérer
      *
      *  @exception out_of_range si pos non valide
+     *
+     *  O(n)
+     *  garantie de base
      */
     void insert(size_t pos, const_reference value) {
         if(pos > size()){
@@ -329,6 +389,9 @@ public:
      *  @param pos la position de suppression. 0 signifie suppression en tête
      *
      *  @exception out_of_range si pos non valide
+     *
+     *  O(n)
+     *  garantie de base
      */
     void erase(size_t pos) {
         if(pos >= size()){
@@ -348,6 +411,9 @@ public:
      *  @return une référence (modifiable) à cet élément
      *
      *  @exception out_of_range si pos non valide
+     *
+     *  O(1)
+     *  garantie de base
      */
     reference at(size_t pos) {
         if(pos >= size()){
@@ -364,6 +430,9 @@ public:
      *  @return une référence (constante) à cet élément
      *
      *  @exception out_of_range si pos non valide
+     *
+     *  O(1)
+     *  garantie de base
      */
     const_reference at(size_t pos) const {
         return const_reference(const_cast<ResizableArray*> (this)->at(pos));
