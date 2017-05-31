@@ -1,10 +1,10 @@
-//
-//  ResizableArray.cpp
-//  Labos ASD1 2017
-//  James Smith, Joel Schär, Guillaume Schranz
-//  18.05.2017
-//  Copyright © 2016 Olivier Cuisenaire. All rights reserved.
-//
+/**
+*  @file ResizableArray.cpp
+*  @name Labos ASD1 2017
+*  @authors James Smith, Joel Schär, Guillaume Schranz
+*  @date 18.05.2017
+*  @remark Copyright © 2016 Olivier Cuisenaire. All rights reserved.
+*/
 
 #include <iostream>
 #include <stdexcept>
@@ -48,8 +48,8 @@ public:
      *
      *  @param size le nombre d'éléments à initialiser par défaut
      *
-     *  O(n)
-     *  garantie forte
+     *  @remark O(n)
+     *          garantie forte
      *
      */
     ResizableArray(size_t size = 0)
@@ -77,8 +77,8 @@ public:
     /**
      *  @brief Constructeur de copie
      *
-     *  O(n)
-     *  garantie forte
+     *  @remark O(n)
+     *          garantie forte
      *
      */
     ResizableArray(const ResizableArray& other)
@@ -109,8 +109,8 @@ public:
     /**
      *  @brief Constructeur de déplacement
      *
-     *  O(1)
-     *  garantie Noexcept
+     *  @remark O(1)
+     *          garantie Noexcept
      *
      */
     ResizableArray(ResizableArray&& other)
@@ -130,8 +130,8 @@ public:
      *
      *  @return *this
      *
-     *  O(n)
-     *  garantie forte
+     *  @remark O(n)
+     *          garantie forte
      *
      */
     ResizableArray& operator = (const ResizableArray& other) {
@@ -160,8 +160,8 @@ public:
      *
      *  @return *this
      *
-     *  O(n)
-     *  garantie Noexcept
+     *  @remark O(n)
+     *          garantie Noexcept
      */
     ResizableArray& operator = (ResizableArray&& other) {
         swap(other);
@@ -171,8 +171,8 @@ public:
     /**
      *  @brief Destructeur
      *
-     *  O(n)
-     *  garantie forte
+     *  @remark O(n)
+     *          garantie forte
      */
     ~ResizableArray() {
         for(pointer ptr = _begin; ptr < _end; ++ptr){
@@ -186,8 +186,8 @@ public:
      *
      *  @param other le ResizableArray avec lequel échanger.
      *
-     *  O(1)
-     *  garantie Noexcept
+     *  @remark O(1)
+     *          garantie Noexcept
      *
      */
     void swap(ResizableArray& other) noexcept {
@@ -202,8 +202,8 @@ public:
      *
      *  @return le nombre d'éléments stockés
      *
-     *  O(1)
-     *  garantie Noexcept
+     *  @remark O(1)
+     *          garantie Noexcept
      *
      */
     size_t size() const noexcept {
@@ -215,8 +215,8 @@ public:
      *
      *  @return le nombre d'éléments stockables avec la mémoire actuellement allouée
      *
-     *  O(1)
-     *  garantie Noexcept
+     *  @remark O(1)
+     *          garantie Noexcept
      *
      */
     size_t capacity() const noexcept {
@@ -229,8 +229,8 @@ public:
      *
      *  @remark si la taille augmente, les éléments supplémentaires doivent être créés. si elle diminue, les éléments excédentaires doivent être détruits
      *
-     *  O(n)
-     *  garantie forte
+     *  @remark O(n)
+     *          garantie forte
      *
      */
     void resize(size_t newSize) {
@@ -238,7 +238,10 @@ public:
             if(newSize > capacity()){
                 reserve(newSize);
             }
-            _end += (newSize - size());
+            for(size_t i = size(); i < capacity(); ++i){
+                new (_begin + i) value_type(0);
+            }
+            _end = _begin + newSize;
         } else if(newSize < size()){
             for(int i = (int)size()-1; i >= (int)newSize; --i){
                 pop_back();
@@ -251,8 +254,8 @@ public:
      *
      *  @param newCapacity la nouvelle capacité, si celle ci est plus grande que la capacité actuelle. sinon c'est une no-op.
      *
-     *  O(n)
-     *  garantie forte
+     *  @remark O(n)
+     *          garantie forte
      *
      */
     void reserve(size_t newCapacity) {
@@ -281,8 +284,8 @@ public:
     /**
      *  @brief Diminue la capacité autant que possible.
      *
-     *  O(1)
-     *  garantie Noexcept
+     *  @remark O(1)
+     *          garantie Noexcept
      */
     void shrinkToFit() {
         if(_end_cap > _end){
@@ -296,8 +299,8 @@ public:
      *
      *  @param value l'élément à ajouté.
      *
-     *  O(1)
-     *  garantie de base
+     *  @remark O(1)
+     *          garantie de base
      */
     void push_back(const_reference value) {
         if(size() == capacity()){
@@ -311,8 +314,8 @@ public:
      *
      *  @exception runtime_error si le tableau est vide
      *
-     *  O(1)
-     *  garantie de base
+     *  @remark O(1)
+     *          garantie de base
      */
     void pop_back() {
         if(size() == 0){
@@ -328,8 +331,8 @@ public:
      *
      *  @exception runtime_error si le tableau est vide
      *
-     *  O(1)
-     *  garantie de base
+     *  @remark O(1)
+     *          garantie de base
      */
     reference back() {
         if(size() == 0){
@@ -345,8 +348,8 @@ public:
      *
      *  @exception runtime_error si le tableau est vide
      *
-     *  O(1)
-     *  garantie de base
+     *  @remark O(1)
+     *          garantie de base
      */
     const_reference back() const {
         return const_reference(const_cast<ResizableArray*> (this))->back;
@@ -360,8 +363,8 @@ public:
      *
      *  @exception out_of_range si pos non valide
      *
-     *  O(n)
-     *  garantie de base
+     *  @remark O(n)
+     *          garantie de base
      */
     void insert(size_t pos, const_reference value) {
         if(pos > size()){
@@ -390,8 +393,8 @@ public:
      *
      *  @exception out_of_range si pos non valide
      *
-     *  O(n)
-     *  garantie de base
+     *  @remark O(n)
+     *          garantie de base
      */
     void erase(size_t pos) {
         if(pos >= size()){
@@ -412,8 +415,8 @@ public:
      *
      *  @exception out_of_range si pos non valide
      *
-     *  O(1)
-     *  garantie de base
+     *  @remark O(1)
+     *          garantie de base
      */
     reference at(size_t pos) {
         if(pos >= size()){
@@ -431,8 +434,8 @@ public:
      *
      *  @exception out_of_range si pos non valide
      *
-     *  O(1)
-     *  garantie de base
+     *  @remark O(1)
+     *          garantie de base
      */
     const_reference at(size_t pos) const {
         return const_reference(const_cast<ResizableArray*> (this)->at(pos));
